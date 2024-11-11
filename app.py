@@ -667,8 +667,7 @@ To create a meaningful recommendation, consider how the product fits into the us
 2. *Nutritional Purpose:* Define the product’s primary role (e.g., protein source, energy booster, caffeine source, travel snack).
 3. *Health Perception:* Understand if the product is consumed for health benefits or as an indulgence.
 4. *Frequency of Use:* Assess the likely frequency of consumption and potential for daily use.
-5. *Hidden Risks:* Identify any unnoticed harms, particularly if the user sees it as "healthy."
-
+5. *Focus on any non-obvious risks specific to this product type that the user might miss (e.g., sugar in chocolate can be obvious, but artificial additives in “natural” snacks may not be).
 ---
 
 ### Final Recommendation Structure:
@@ -686,7 +685,7 @@ Provide a concise and practical recommendation, using this format:
 ---
 
 Be concise, factual, and empathetic. Aim for actionable insights based on science and practical dietary advice.
-Output word limit : 100 words"""
+Output word limit : 50 words"""
 
     user_prompt = f"""
 Product Name: {brand_name} {product_name}
