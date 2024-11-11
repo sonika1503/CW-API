@@ -685,7 +685,7 @@ Provide a concise and practical recommendation, using this format:
 ---
 
 Be concise, factual, and empathetic. Aim for actionable insights based on science and practical dietary advice.
-Output word limit : 50 words"""
+Output word limit : 100 words"""
 
     user_prompt = f"""
 Product Name: {brand_name} {product_name}
