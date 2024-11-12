@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from openai import OpenAI
 
 def create_Assistant(file_path, sheetname="Sheet6"):    
     # Read CSV file
