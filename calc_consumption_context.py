@@ -43,7 +43,7 @@ def get_consumption_context(user_query, client):
     
     #client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    response = get_consumption_context(df_str, client, user_query)
+    response = get_consumption_context_row_num(df_str, client, user_query)
     row_num = int(response.split()[-1])
     print(f"Row num is {row_num}")
     print(df.iloc[row_num])
