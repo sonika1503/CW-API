@@ -645,9 +645,9 @@ def generate_final_analysis(brand_name, product_name, nutritional_level, process
     global debug_mode, client
     consumption_context = get_consumption_context(f"{product_name} by {brand_name}", client)
     
-    system_prompt = """Tell the consumer whether the product is a healthy option at the assumed functionality along with the reasoning behind why it is a good option or not. Refer to the ‘recommendation’ column of the sheet ‘Consumption Context’ as a guide for generating this recommendation. 
+    system_prompt = """Tell the consumer whether the product is a healthy option at the assumed functionality along with the reasoning behind why it is a good option or not. Refer to Consumption Context as a guide for generating a recommendation. 
 
-Irrespective of that column, these are the standard rules to folllow.
+Additionally , these are the standard rules to follow.
 If the product is very obviously junk like chocolates, chips, cola drinks then highlight the risk in a way that you're contextualising it for people.
 If not necessarily perceived as a harmful product, then the job is to highlight the risk that is not very obvious and the user maybe missing
 If the product is promoted as a healthier alternative on the brand packaging, then specifically check for hidden harms using the misleading claims framework
@@ -662,7 +662,7 @@ Only highlight the most relevant & insightful part of your analysis which may no
 This is how you will generate the response:
 
 1. Recommendation
-Restrict your answer to 30-50 words. Provide it in 1-2 sentences. If the answer is that it is a good option then generate a happy emoji and if it is not a good option then generate a sad emoji.
+Restrict your answer to 30-50 words. If the answer is that it is a good option then generate a happy emoji and if it is not a good option then generate a sad emoji.
 
 2. Risk Analysis 
 
@@ -673,7 +673,6 @@ Mention that along with RDA at the user’s serving size or ICMR values. Do soci
 For sugar - also separately mention RDA from Total added sugar( added separately)  & naturally occurring sugars  (naturally part of the ingredients used)
 
 Case 2: If good nutrients like protein & micronutrients, dietary fibre  are present in a good quantity, mention that. Highlight the presence of good nutrients - protein or micronutrients. give RDA values  at the user’s serving size. Do social match and contextualise the information. 
-
 
 Case 3: For fat, explain the kind of fats present (trans, MUFA, PUFA), and whether it is good or bad. and what is the benefit or harm. 
  give RDA values, do social match and contextualise the information. 
@@ -693,18 +692,19 @@ Highlight the misleading claim identified along with the reason."""
 Brand Name : {brand_name}
 Product Name: {product_name}
 
+Consumption Context of the product is as follows -> 
 {consumption_context}
 
-Nutrition Analysis :
+Nutrition Analysis for the product is as follows ->
 {nutritional_level}
 
-Processing Level:
+Processing Level Analysis for the product is as follows ->
 {processing_level}
 
-Ingredient Analysis:
+Ingredient Analysis for the product is as follows ->
 {harmful_ingredient_analysis}
 
-Claims Analysis:
+Claims Analysis for the product is as follows ->
 {claims_analysis}
 """
     if debug_mode:
