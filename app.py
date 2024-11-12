@@ -693,7 +693,6 @@ Highlight the misleading claim identified along with the reason."""
 Brand Name : {brand_name}
 Product Name: {product_name}
 
-Consumption Context :
 {consumption_context}
 
 Nutrition Analysis :
