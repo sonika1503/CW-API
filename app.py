@@ -826,7 +826,7 @@ def chatbot_response(image_urls_str, product_name_by_user, data_extractor_url, e
             product_info_raw = extract_data_from_product_image(image_urls, data_extractor_url)
             print(f"DEBUG product_info_raw from image : {product_info_raw}")
             if 'error' not in json.loads(product_info_raw).keys():
-                final_analysis = analyze_product(product_info_raw)
+                final_analysis = analyze_product(json.loads(product_info_raw))
                 return [], final_analysis
             else:
                 return [], f"Product information could not be extracted from the image because of {json.loads(product_info_raw)['error']}"
