@@ -47,6 +47,17 @@ def get_consumption_context(user_query, client):
     row_num = int(response.split()[-1])
     print(f"Row num is {row_num}")
     print(df.iloc[row_num])
-    row_str = f"Category - {df.iloc[row_num, 0]}\nSub-category - {df.iloc[row_num, 1]}\n\nProduct Examples - {df.iloc[row_num, 2]}\n\nFunctionality - {df.iloc[row_num, 3]}\n\nAssumed Consumption Frequency - {df.iloc[row_num, 4]}\n\nHealth benefit perceived by the user - {df.iloc[row_num, 5]}\n\nHow to analyze the product? - {df.iloc[row_num, 6]}\n\n"
+    row_str = f"""Category : {df.iloc[row_num, 0]}
+    Sub-category : {df.iloc[row_num, 1]}
+    
+    Product Examples : {df.iloc[row_num, 2]}
+    
+    Functionality : {df.iloc[row_num, 3]}
+    
+    Assumed Consumption Frequency : {df.iloc[row_num, 4]}
+    
+    Health benefit typically perceived by consumers : {df.iloc[row_num, 5]}
+    
+    How to analyze the product? : {df.iloc[row_num, 6]}"""
     #Pick the selected row from df and collect column names and values of columns starting from col no. 3
     return row_str
