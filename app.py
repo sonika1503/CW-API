@@ -490,34 +490,34 @@ def analyze_harmful_ingredients(ingredient, assistant_id):
     )
     
     
-    # List run steps to get step IDs
-    run_steps = client.beta.threads.runs.steps.list(
-        thread_id=thread.id,
-        run_id=run.id
-    )
+    ## List run steps to get step IDs
+    #run_steps = client.beta.threads.runs.steps.list(
+    #    thread_id=thread.id,
+    #    run_id=run.id
+    #)
     
-    # Initialize a list to store step IDs and their corresponding run steps
-    all_steps_info = []
+    ## Initialize a list to store step IDs and their corresponding run steps
+    #all_steps_info = []
     
-    # Iterate over each step in run_steps.data
-    for step in run_steps.data:  # Access each RunStep object
-        step_id = step.id  # Get the step ID (use 'step_id' instead of 'id')
+    ## Iterate over each step in run_steps.data
+    #for step in run_steps.data:  # Access each RunStep object
+    #    step_id = step.id  # Get the step ID (use 'step_id' instead of 'id')
     
-        # Retrieve detailed information for each step using its ID
-        run_step_detail = client.beta.threads.runs.steps.retrieve(
-            thread_id=thread.id,
-            run_id=run.id,
-            step_id=step_id,
-            include=["step_details.tool_calls[*].file_search.results[*].content"]
-        )
+        ## Retrieve detailed information for each step using its ID
+        #run_step_detail = client.beta.threads.runs.steps.retrieve(
+        #    thread_id=thread.id,
+        #    run_id=run.id,
+        #    step_id=step_id,
+        #    include=["step_details.tool_calls[*].file_search.results[*].content"]
+        #)
     
-        # Append a tuple of (step_id, run_step_detail) to the list
-        all_steps_info.append((step_id, run_step_detail))
+        ## Append a tuple of (step_id, run_step_detail) to the list
+        #all_steps_info.append((step_id, run_step_detail))
     
-    # Print all step IDs and their corresponding run steps
-    for step_id, run_step_detail in all_steps_info:
-        print(f"Step ID: {step_id}")
-        print(f"Run Step Detail: {run_step_detail}\n")
+    ## Print all step IDs and their corresponding run steps
+    #for step_id, run_step_detail in all_steps_info:
+    #    print(f"Step ID: {step_id}")
+    #    print(f"Run Step Detail: {run_step_detail}\n")
     
     # Polling loop to wait for a response in the thread
     messages = []
