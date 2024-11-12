@@ -8,6 +8,7 @@ from rda import find_nutrition
 from typing import Dict, Any
 from calc_cosine_similarity import find_cosine_similarity, find_embedding , find_relevant_file_paths
 import pickle
+from calc_consumption_context import get_consumption_context
 
 #Used the @st.cache_resource decorator on this function. 
 #This Streamlit decorator ensures that the function is only executed once and its result (the OpenAI client) is cached. 
@@ -642,6 +643,8 @@ The output must be in JSON format as follows:
 
 def generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis):
     global debug_mode, client
+    consumption_context = get_consumption_context(f"{product_name} by {brand_name}", client)
+    
     system_prompt = """Tell the consumer whether the product is a healthy option at the assumed functionality along with the reasoning behind why it is a good option or not. Refer to the ‘recommendation’ column of the sheet ‘Consumption Context’ as a guide for generating this recommendation. 
 
 Irrespective of that column, these are the standard rules to folllow.
@@ -687,7 +690,11 @@ C. Misleading Claims
 Highlight the misleading claim identified along with the reason."""
 
     user_prompt = f"""
-Product Name: {brand_name} {product_name}
+Brand Name : {brand_name}
+Product Name: {product_name}
+
+Consumption Context :
+{consumption_context}
 
 Nutrition Analysis :
 {nutritional_level}
