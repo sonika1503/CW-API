@@ -56,7 +56,7 @@ def get_consumption_context(user_query, client):
     
     Assumed Consumption Frequency : {df.iloc[row_num, 4]}
     
-    Health benefit typically perceived by consumers : {df.iloc[row_num, 5]}
+    General product perception by the consumer  : {df.iloc[row_num, 5]}
     
     How to analyze the product? : {df.iloc[row_num, 6]}"""
     #Pick the selected row from df and collect column names and values of columns starting from col no. 3
