@@ -258,33 +258,12 @@ def initialize_assistants_and_vector_stores():
     )
 
     embeddings_titles = []
-    if not os.path.exists('embeddings.pkl'):
-        #Find embeddings of titles from titles.txt
-        titles = []
-        #if embedding_titles.pkl is absent
-        with open('titles.txt', 'r') as file:
-            lines = file.readlines()
-    
-        titles = [line.strip() for line in lines]
-        
-        embeddings_titles = find_embedding(titles, lim=50)
-        #Save embeddings_titles to embedding_titles.pkl
-        data = {
-            'sentences': titles[:50],
-            'embeddings': embeddings_titles
-        }
-        with open('embeddings.pkl', 'wb') as f:
-            pickle.dump(data, f)
 
-        if os.path.exists("embeddings.pkl"):
-            print("embeddings.pkl successfully written!")
-
-    else: 
-        print("Reading embeddings.pkl")
-        # Load both sentences and embeddings
-        with open('embeddings.pkl', 'rb') as f:
-            loaded_data = pickle.load(f)
-        embeddings_titles = loaded_data['embeddings']
+    print("Reading embeddings.pkl")
+    # Load both sentences and embeddings
+    with open('embeddings.pkl', 'rb') as f:
+        loaded_data = pickle.load(f)
+    embeddings_titles = loaded_data['embeddings']
 
     return assistant1, assistant3, embeddings_titles
     
