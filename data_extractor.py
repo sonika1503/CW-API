@@ -170,7 +170,7 @@ def find_product(product_name):
                 for product in products:
                     brand_product_name = product['productName'] + " by " + product['brandName']
                     #Remove repitition words that appear consecutively - Example - Cadbury cadbury dairy milk chocolate
-                    if brand_product_name not in product_list:
+                    if brand_product_name.lower() not in [product.lower() for product in product_list]:
                         product_list.append(brand_product_name)
             
             # # Create a list of product names that match the query
