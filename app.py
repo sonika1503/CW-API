@@ -257,40 +257,58 @@ def initialize_assistants_and_vector_stores():
       tool_resources={"file_search": {"vector_store_ids": [vector_store3.id]}},
     )
 
-    embeddings_titles = []
+    embeddings_titles_1 = []
 
     print("Reading embeddings.pkl")
     # Load both sentences and embeddings
     with open('embeddings.pkl', 'rb') as f:
-        loaded_data = pickle.load(f)
-    embeddings_titles = loaded_data['embeddings']
+        loaded_data_1 = pickle.load(f)
+    embeddings_titles_1 = loaded_data_1['embeddings']
 
-    return assistant1, assistant3, embeddings_titles
+    embeddings_titles_2 = []
+    print("Reading embeddings_harvard.pkl")
+    # Load both sentences and embeddings
+    with open('embeddings_harvard.pkl', 'rb') as f:
+        loaded_data_2 = pickle.load(f)
+    embeddings_titles_2 = loaded_data_2['embeddings']
+
+    return assistant1, assistant3, embeddings_titles_1, embeddings_titles_2
     
 
-assistant1, assistant3, embeddings_titles = initialize_assistants_and_vector_stores()
+assistant1, assistant3, embeddings_titles_1, embeddings_titles_2 = initialize_assistants_and_vector_stores()
 
 def get_files_with_ingredient_info(ingredient, N=1):
-    file_paths = []
     #Find embedding for title of all files
-    global embeddings_titles
+    global embeddings_titles_1, embeddings_titles_2
 
     with open('titles.txt', 'r') as file:
         lines = file.readlines()
     
     titles = [line.strip() for line in lines]
-
+    folder_name_1 = "articles"
     #Apply cosine similarity between embedding of ingredient name and title of all files
-    file_paths_abs, file_titles = find_relevant_file_paths(ingredient, embeddings_titles, titles, N=N)
+    file_paths_abs_1, file_titles_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, N=N)
+
+    with open('titles_harvard.txt', 'r') as file:
+        lines = file.readlines()
+    
+    titles = [line.strip() for line in lines]
+    folder_name_2 = "articles_harvard"
+    #Apply cosine similarity between embedding of ingredient name and title of all files
+    file_paths_abs_2, file_titles_2 = find_relevant_file_paths(ingredient, embeddings_titles_2, titles, N=N)
+
     #Fine top N titles that are the most similar to the ingredient's name
     #Find file names for those titles
-    if len(file_paths_abs) == 0:
+    file_paths = []
+    if len(file_paths_abs_1) == 0 and len(file_paths_abs_2) == 0:
         file_paths.append("Ingredients.docx")
     else:
-        for file_path in file_paths_abs:
-            file_paths.append(f"articles/{file_path}")
+        for file_path in file_paths_abs_1:
+            file_paths.append(f"{folder_name_1}/{file_path}")
+        for file_path in file_paths_abs_2:
+            file_paths.append(f"{folder_name_2}/{file_path}")
 
-        print(f"Titles are {file_titles}")
+        print(f"Titles are {file_titles_1} and {file_titles_2}")
             
     return file_paths
     
