@@ -287,7 +287,7 @@ def get_files_with_ingredient_info(ingredient, N=1):
     titles = [line.strip() for line in lines]
     folder_name_1 = "articles"
     #Apply cosine similarity between embedding of ingredient name and title of all files
-    file_paths_abs_1, file_titles_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, N=N)
+    file_paths_abs_1, file_titles_1, refs_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, folder_name_1, N=N)
 
     with open('titles_harvard.txt', 'r') as file:
         lines = file.readlines()
@@ -295,22 +295,25 @@ def get_files_with_ingredient_info(ingredient, N=1):
     titles = [line.strip() for line in lines]
     folder_name_2 = "articles_harvard"
     #Apply cosine similarity between embedding of ingredient name and title of all files
-    file_paths_abs_2, file_titles_2 = find_relevant_file_paths(ingredient, embeddings_titles_2, titles, N=N)
+    file_paths_abs_2, file_titles_2, refs_2 = find_relevant_file_paths(ingredient, embeddings_titles_2, titles, folder_name_1, N=N)
 
     #Fine top N titles that are the most similar to the ingredient's name
     #Find file names for those titles
     file_paths = []
+    refs = []
     if len(file_paths_abs_1) == 0 and len(file_paths_abs_2) == 0:
         file_paths.append("Ingredients.docx")
     else:
         for file_path in file_paths_abs_1:
-            file_paths.append(f"{folder_name_1}/{file_path}")
+            file_paths.append(file_path)
+        refs.extend(refs_1)
         for file_path in file_paths_abs_2:
-            file_paths.append(f"{folder_name_2}/{file_path}")
+            file_paths.append(file_path)
+        refs.extend(refs_1)
 
         print(f"Titles are {file_titles_1} and {file_titles_2}")
             
-    return file_paths
+    return file_paths, refs
     
 def get_assistant_for_ingredient(ingredient, N=2):
     global client
@@ -339,10 +342,10 @@ def get_assistant_for_ingredient(ingredient, N=2):
     )
     
     # Ready the files for upload to OpenAI.     
-    file_paths = get_files_with_ingredient_info(ingredient, N)
+    file_paths, refs = get_files_with_ingredient_info(ingredient, N)
     if file_paths[0] == "Ingredients.docx" and assistant_default_doc:
         #print(f"Using Ingredients.docx for analyzing ingredient {ingredient}")
-        return assistant_default_doc
+        return assistant_default_doc, refs
         
     print(f"DEBUG : Creating vector store for files {file_paths} to analyze ingredient {ingredient}")
     
@@ -367,7 +370,7 @@ def get_assistant_for_ingredient(ingredient, N=2):
     if file_paths[0] == "Ingredients.docx" and assistant_default_doc is None:
         assistant_default_doc = assistant2
         
-    return assistant2
+    return assistant2, refs
 
 def analyze_nutrition_icmr_rda(nutrient_analysis, nutrient_analysis_rda):
     global debug_mode, client
@@ -638,7 +641,7 @@ The output must be in JSON format as follows:
     
     return claims_analysis_str
 
-def generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis):
+def generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis, refs):
     global debug_mode, client
     consumption_context = get_consumption_context(f"{product_name} by {brand_name}", client)
     
@@ -715,7 +718,7 @@ Claims Analysis for the product is as follows ->
         ]
     )
 
-    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}"
+    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nCitations: {'\n'.join(refs)}"
 
 
 def analyze_product(product_info_raw):
@@ -760,13 +763,13 @@ def analyze_product(product_info_raw):
         if len(ingredients_list) > 0:    
             processing_level = analyze_processing_level(ingredients_list, assistant1.id) if ingredients_list else ""
             for ingredient in ingredients_list:
-                assistant_id_ingredient = get_assistant_for_ingredient(ingredient, 2)
+                assistant_id_ingredient, refs = get_assistant_for_ingredient(ingredient, 2)
                 harmful_ingredient_analysis += analyze_harmful_ingredients(ingredient, assistant_id_ingredient.id) + "\n"
         
         if len(claims_list) > 0:                    
             claims_analysis = analyze_claims(claims_list, ingredients_list, assistant3.id) if claims_list else ""
                 
-        final_analysis = generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis)
+        final_analysis = generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis, refs)
 
         return final_analysis
     #else:
