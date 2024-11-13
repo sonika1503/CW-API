@@ -40,16 +40,21 @@ def find_relevant_file_paths(ingredient, embeddings, titles, N=2, thres=0.7):
     
     embedding_ingredient = model.encode(ingredient, convert_to_tensor=True)
     cosine_sims_dict = {}
+    cosine_sims_title = {}
+  
     title_num = 0
     for embedding in embeddings:
         # Compute cosine similarity
         title_num += 1
         cosine_sim = util.pytorch_cos_sim(embedding_ingredient, embedding)
         cosine_sims_dict.update({title_num:cosine_sim})
+        cosine_sims_title.update({titles[title_num-1]:cosine_sim})
 
     #Sort cosine_sims_dict based on value of cosine_sim
     top_n_cosine_sims_dict = dict(sorted(cosine_sims_dict.items(), key=lambda item: item[1], reverse=True)[:N])
-    print(f"DEBUG : Ingredient {ingredient} top_n_cosine_sims_dict : {top_n_cosine_sims_dict}")
+    top_n_cosine_sims_title = dict(sorted(cosine_sims_title.items(), key=lambda item: item[1], reverse=True)[:N])
+
+    print(f"DEBUG : Ingredient {ingredient} top_n_cosine_sims_dict : {top_n_cosine_sims_dict} top_n_cosine_sims_title : {top_n_cosine_sims_title}")
     
     for key, value in top_n_cosine_sims_dict.items():
         if value.item() > thres:
