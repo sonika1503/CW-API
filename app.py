@@ -723,7 +723,6 @@ Claims Analysis for the product is as follows ->
 
     if len(refs) > 0:
         L = min(2, len(refs))
-        print(f"refs are {refs}")
         return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n\n{'\n'.join(refs[0:L])}"
     else:
         return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}"
@@ -748,6 +747,7 @@ def analyze_product(product_info_raw):
         processing_level = ""
         all_ingredient_analysis = ""
         claims_analysis = ""
+        refs = []
         
         if nutritional_information:
             product_type, calories, sugar, salt, serving_size = find_product_nutrients(product_info_from_db)
@@ -769,14 +769,13 @@ def analyze_product(product_info_raw):
             nutritional_level = analyze_nutrition_icmr_rda(nutrient_analysis, nutrient_analysis_rda)
         
         if len(ingredients_list) > 0:
-            refs = []
             processing_level = analyze_processing_level(ingredients_list, assistant1.id) if ingredients_list else ""
             for ingredient in ingredients_list:
                 assistant_id_ingredient, refs_ingredient = get_assistant_for_ingredient(ingredient, 2)
                 ingredient_analysis, is_ingredient_in_doc = analyze_harmful_ingredients(ingredient, assistant_id_ingredient.id)
                 all_ingredient_analysis += ingredient_analysis + "\n"
                 if is_ingredient_in_doc:
-                    refs.append(refs_ingredient)
+                    refs.extend(refs_ingredient)
         
         if len(claims_list) > 0:                    
             claims_analysis = analyze_claims(claims_list, ingredients_list, assistant3.id) if claims_list else ""
