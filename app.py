@@ -745,7 +745,7 @@ def analyze_product(product_info_raw):
         nutrient_analysis = ""
         nutritional_level = ""
         processing_level = ""
-        harmful_ingredient_analysis = ""
+        all_ingredient_analysis = ""
         claims_analysis = ""
         
         if nutritional_information:
