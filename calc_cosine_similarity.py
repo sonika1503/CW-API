@@ -33,11 +33,12 @@ def find_embedding(texts, lim=None):
 
     return embeddings
 
-def find_relevant_file_paths(ingredient, embeddings, titles, N=2, thres=0.7):
+def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, N=2, thres=0.7):
     global model
     file_paths = []
     file_titles = []
-    
+    refs = []
+
     embedding_ingredient = model.encode(ingredient, convert_to_tensor=True)
     cosine_sims_dict = {}
     cosine_sims_title = {}
@@ -60,6 +61,16 @@ def find_relevant_file_paths(ingredient, embeddings, titles, N=2, thres=0.7):
         if value.item() > thres:
             file_paths.append(f"article{key}.txt")
             file_titles.append(titles[key-1])
+            #Read lines after "References:" from {folder_name}/article{key}.txt
+            start = 0
+            for line in open(f"{folder_name}/article{key}.txt").readlines():
+              if line.strip() == "References:" and start == 0:
+                start = 1
+                continue
+              if start == 1:
+                if ".ncbi." in line.strip():
+                  refs.append(line.strip())
+  
         
-    return file_paths, file_titles
+    return file_paths, file_titles, list(set(sorted(refs)))
     
