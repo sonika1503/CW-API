@@ -71,6 +71,6 @@ def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, N=2, t
                 if ".ncbi." in line.strip():
                   refs.append(line.strip())
   
-        
+    print(f"Returning citations : {list(set(sorted(refs)))}")    
     return file_paths, file_titles, list(set(sorted(refs)))
     
