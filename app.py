@@ -718,7 +718,7 @@ Claims Analysis for the product is as follows ->
         ]
     )
 
-    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nCitations: {'\n'.join(refs)}"
+    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nCitations: {'\n'.join(refs[:2])}"
 
 
 def analyze_product(product_info_raw):
