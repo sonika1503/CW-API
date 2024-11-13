@@ -287,7 +287,7 @@ def get_files_with_ingredient_info(ingredient, N=1):
     titles = [line.strip() for line in lines]
     folder_name_1 = "articles"
     #Apply cosine similarity between embedding of ingredient name and title of all files
-    file_paths_abs_1, file_titles_1, refs_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, journal_str = ".ncbi.", folder_name_1, N=N)
+    file_paths_abs_1, file_titles_1, refs_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, folder_name_1, journal_str = ".ncbi.", N=N)
 
     with open('titles_harvard.txt', 'r') as file:
         lines = file.readlines()
