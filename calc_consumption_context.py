@@ -10,7 +10,7 @@ def create_Assistant(file_path, sheetname="Sheet6"):
     pd.set_option('display.max_columns', None)   # Show all columns
     
     # Print the entire DataFrame
-    print(df.head(5))
+    #print(df.head(5))
     return df
 
 def get_consumption_context_row_num(df_str, client, user_query):
@@ -38,15 +38,15 @@ def get_consumption_context(user_query, client):
     df_str = ""
     # Iterate over the DataFrame rows
     for index, row in df.iterrows():
-        print(f"index : {index}")
+        #print(f"index : {index}")
         df_str += f"Row no - {index} Category - {row['Category']} Sub-category - {row['Sub-category']} Product Examples - {row['Product Examples']}\n"
     
     #client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     response = get_consumption_context_row_num(df_str, client, user_query)
     row_num = int(response.split()[-1])
-    print(f"Row num is {row_num}")
-    print(df.iloc[row_num])
+    #print(f"Row num is {row_num}")
+    #print(df.iloc[row_num])
     row_str = f"""Category : {df.iloc[row_num, 0]}
     Sub-category : {df.iloc[row_num, 1]}
     
