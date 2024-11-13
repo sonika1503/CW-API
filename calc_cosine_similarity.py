@@ -59,7 +59,7 @@ def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, N=2, t
     
     for key, value in top_n_cosine_sims_dict.items():
         if value.item() > thres:
-            file_paths.append(f"article{key}.txt")
+            file_paths.append(f"{folder_name}/article{key}.txt")
             file_titles.append(titles[key-1])
             #Read lines after "References:" from {folder_name}/article{key}.txt
             start = 0
