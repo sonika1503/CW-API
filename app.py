@@ -723,7 +723,8 @@ Claims Analysis for the product is as follows ->
 
     if len(refs) > 0:
         L = min(2, len(refs))
-        return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n\n{'\n'.join(refs[:L])}"
+        print(f"refs are {refs}")
+        return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n\n{'\n'.join(refs[0:L])}"
     else:
         return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}"
 
