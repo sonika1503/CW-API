@@ -718,7 +718,7 @@ Claims Analysis for the product is as follows ->
         ]
     )
 
-    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nCitations: {'\n'.join(refs[:2])}"
+    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n{'\n'.join(refs[:2])}"
 
 
 def analyze_product(product_info_raw):
@@ -846,7 +846,7 @@ class SessionState:
             "analyze_more": True,
             "welcome_shown": False,
             "yes_no_choice": None,
-            "welcome_msg": "Welcome to ConsumeWise! What product would you like me to analyze today?",
+            "welcome_msg": "Welcome to ConsumeWise! What product would you like me to analyze today? Example : Noodles, Peanut Butter etc",
             "similar_products": [],
             "awaiting_selection": False,
             "current_user_input": "",
