@@ -33,7 +33,7 @@ def find_embedding(texts, lim=None):
 
     return embeddings
 
-def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, N=2, thres=0.7):
+def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, journal_str = None, N=2, thres=0.7):
     global model
     file_paths = []
     file_titles = []
@@ -68,7 +68,7 @@ def find_relevant_file_paths(ingredient, embeddings, titles, folder_name, N=2, t
                 start = 1
                 continue
               if start == 1:
-                if ".ncbi." in line.strip():
+                if journal_str is not None and journal_str in line.strip():
                   refs.append(line.strip())
   
     print(f"Returning citations : {list(set(sorted(refs)))}")    
