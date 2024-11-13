@@ -309,7 +309,7 @@ def get_files_with_ingredient_info(ingredient, N=1):
         refs.extend(refs_1)
         for file_path in file_paths_abs_2:
             file_paths.append(file_path)
-        refs.extend(refs_1)
+        refs.extend(refs_2)
 
         print(f"Titles are {file_titles_1} and {file_titles_2}")
             
