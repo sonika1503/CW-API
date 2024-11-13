@@ -287,7 +287,7 @@ def get_files_with_ingredient_info(ingredient, N=1):
     titles = [line.strip() for line in lines]
     folder_name_1 = "articles"
     #Apply cosine similarity between embedding of ingredient name and title of all files
-    file_paths_abs_1, file_titles_1, refs_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, folder_name_1, N=N)
+    file_paths_abs_1, file_titles_1, refs_1 = find_relevant_file_paths(ingredient, embeddings_titles_1, titles, journal_str = ".ncbi.", folder_name_1, N=N)
 
     with open('titles_harvard.txt', 'r') as file:
         lines = file.readlines()
@@ -468,6 +468,8 @@ def analyze_processing_level(ingredients, assistant_id):
 
 def analyze_harmful_ingredients(ingredient, assistant_id):
     global debug_mode, client
+    is_ingredient_not_found_in_doc = False
+    
     thread = client.beta.threads.create(
         messages=[
             {
@@ -555,6 +557,7 @@ def analyze_harmful_ingredients(ingredient, assistant_id):
       for key, value in json.loads(message_content.value.replace("```", "").replace("json", "")).items():
           if value.startswith("(NOT FOUND IN DOCUMENT)"):
               ingredients_not_found_in_doc.append(key)
+              is_ingredient_not_found_in_doc = True
           print(f"Ingredients not found in database {','.join(ingredients_not_found_in_doc)}")
     
     harmful_ingredient_analysis = json.loads(message_content.value.replace("```", "").replace("json", "").replace("(NOT FOUND IN DOCUMENT) ", ""))
@@ -562,7 +565,7 @@ def analyze_harmful_ingredients(ingredient, assistant_id):
     harmful_ingredient_analysis_str = ""
     for key, value in harmful_ingredient_analysis.items():
       harmful_ingredient_analysis_str += f"{key}: {value}\n"
-    return harmful_ingredient_analysis_str
+    return harmful_ingredient_analysis_str, is_ingredient_not_found_in_doc
 
 def analyze_claims(claims, ingredients, assistant_id):
     global debug_mode, client
@@ -641,7 +644,7 @@ The output must be in JSON format as follows:
     
     return claims_analysis_str
 
-def generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis, refs):
+def generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, all_ingredient_analysis, claims_analysis, refs):
     global debug_mode, client
     consumption_context = get_consumption_context(f"{product_name} by {brand_name}", client)
     
@@ -702,7 +705,7 @@ Processing Level Analysis for the product is as follows ->
 {processing_level}
 
 Ingredient Analysis for the product is as follows ->
-{harmful_ingredient_analysis}
+{all_ingredient_analysis}
 
 Claims Analysis for the product is as follows ->
 {claims_analysis}
@@ -718,7 +721,10 @@ Claims Analysis for the product is as follows ->
         ]
     )
 
-    return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n\n{'\n'.join(refs[:2])}"
+    if len(refs) > 0:
+        return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}\n\nTop Citations:\n\n{'\n'.join(refs[:min(2, len(refs)])}"
+    else:
+        return f"Brand: {brand_name}\n\nProduct: {product_name}\n\nAnalysis:\n\n{completion.choices[0].message.content}"
 
 
 def analyze_product(product_info_raw):
@@ -760,16 +766,20 @@ def analyze_product(product_info_raw):
             #Call GPT for nutrient analysis
             nutritional_level = analyze_nutrition_icmr_rda(nutrient_analysis, nutrient_analysis_rda)
         
-        if len(ingredients_list) > 0:    
+        if len(ingredients_list) > 0:
+            refs = []
             processing_level = analyze_processing_level(ingredients_list, assistant1.id) if ingredients_list else ""
             for ingredient in ingredients_list:
-                assistant_id_ingredient, refs = get_assistant_for_ingredient(ingredient, 2)
-                harmful_ingredient_analysis += analyze_harmful_ingredients(ingredient, assistant_id_ingredient.id) + "\n"
+                assistant_id_ingredient, refs_ingredient = get_assistant_for_ingredient(ingredient, 2)
+                ingredient_analysis, is_ingredient_in_doc = analyze_harmful_ingredients(ingredient, assistant_id_ingredient.id)
+                all_ingredient_analysis += ingredient_analysis + "\n"
+                if is_ingredient_in_doc:
+                    refs.append(refs_ingredient)
         
         if len(claims_list) > 0:                    
             claims_analysis = analyze_claims(claims_list, ingredients_list, assistant3.id) if claims_list else ""
                 
-        final_analysis = generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, harmful_ingredient_analysis, claims_analysis, refs)
+        final_analysis = generate_final_analysis(brand_name, product_name, nutritional_level, processing_level, all_ingredient_analysis, claims_analysis, refs)
 
         return final_analysis
     #else:
