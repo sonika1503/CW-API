@@ -4,7 +4,6 @@ import json
 from PIL import Image
 import io
 import re
-from bson import ObjectId
 from openai import OpenAI
 
 # Set OpenAI Client
