@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 # Environment variables (should be moved to .env file)
-MONGODB_URL = os.getenv("MONGODB_URL", "mongodb+srv://consumewise_db:p123%40@cluster0.sodps.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGODB_URL = os.getenv("MONGODB_URL")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialize OpenAI client
