@@ -146,8 +146,8 @@ async def extract_information(image_links: List[str]) -> Dict[str, Any]:
 @app.post("/api/extract-data")
 async def extract_data(image_links: List[str]):
     """Extract data from product images and store in database."""
-    if not image_links:
-        raise HTTPException(status_code=400, detail="No image URLs provided")
+    if not image_links or len(image_links) > 5:  # Limit to 5 images
+        raise HTTPException(status_code=400, detail="Provide up to 5 image URLs only")
     
     try:
         extracted_data = await extract_information(image_links)
