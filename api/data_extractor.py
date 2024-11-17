@@ -50,8 +50,8 @@ async def extract_information(image_links: List[str]) -> Dict[str, Any]:
 
 @app.post("/api/extract-data")
 async def extract_data(image_links: List[str]):
-    if not image_links or len(image_links) > 5:
-        raise HTTPException(status_code=400, detail="Provide up to 5 image URLs only")
+    if not image_links:
+        raise HTTPException(status_code=400, detail="Image links not found")
     
     try:
         extracted_data = await extract_information(image_links)
