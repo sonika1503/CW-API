@@ -1,0 +1,1 @@
+#The __init__.py file in your api directory can be empty - it's just needed to mark the api directory as a Python package. However, if you want to make imports cleaner, you can use it to expose the key components of your API.
